@@ -23,4 +23,14 @@ router.post('/', (request, response) => {
     })
 });
 
+router.get('/:id', (request,response) => {
+    db.Todo.findById(request.params.id)
+    .then((todo) => {
+        response.json(todo);
+    })
+    .catch((error) => {
+        response.send(error);
+    })
+});
+
 module.exports = router;
