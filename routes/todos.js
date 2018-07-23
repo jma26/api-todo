@@ -12,4 +12,15 @@ router.get('/', (request, response) => {
     })
 });
 
+router.post('/', (request, response) => {
+    console.log(request.body);
+    db.Todo.create(request.body)
+    .then((newTodo) => {
+        response.status(201).json(newTodo);
+    })
+    .catch((error) => {
+        response.send(error);
+    })
+});
+
 module.exports = router;
