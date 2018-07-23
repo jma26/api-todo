@@ -43,4 +43,14 @@ router.put('/:id', (request, response) => {
     })
 });
 
+router.delete('/:id', (request, response) => {
+    db.Todo.remove({_id: request.params.id})
+    .then(() => {
+        response.json({message: 'Task deleted'});
+    })
+    .catch((error) => {
+        response.send(error);
+    })
+});
+
 module.exports = router;
