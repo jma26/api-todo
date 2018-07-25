@@ -8,18 +8,26 @@ $(document).ready(function() {
             createTodo();
         }
     })
+
+    $('.list').on('click', 'span', (event) => {
+        let todo = event.currentTarget.parentElement;
+        deleteTodo(todo);
+    });
 });
 
 function createTodo() {
     let userInput = $('#todoInput').val();
     $.post('/api/todos', {task: userInput})
-    .then((newTodo) => addTodo(newTodo))
+    .then((newTodo) => {
+        $('#todoInput').val('');
+        addTodo(newTodo)
+    })
     .catch((error) => response.send(error));
 }
 
 function addTodo(todo) {
-    $('#todoInput').val('');
-    let newTodo = $(`<li class="task"> ${todo.task} - ${todo.completed} </li>`)
+    console.log(todo);
+    let newTodo = $(`<li data-id=${todo._id} class="task"> ${todo.task} <span>X</span> </li>`);
         if (todo.completed) {
             newTodo.addClass('done');
         }
@@ -29,5 +37,16 @@ function addTodo(todo) {
 function addTodos(todos) {
     todos.forEach((todo) => {
         addTodo(todo);
+    })
+}
+
+function deleteTodo(todo) {
+    $.ajax({
+        method: 'DELETE',
+        url: `/api/todos/${todo.dataset.id}`
+    })
+    .then((data) => {
+        console.log(data);  
+        $(todo).remove();
     })
 }
