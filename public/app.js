@@ -9,7 +9,12 @@ $(document).ready(function() {
         }
     })
 
+    $('.list').on('click', 'li', (event) => {
+        updateTodo(event);
+    })
+
     $('.list').on('click', 'span', (event) => {
+        event.stopPropagation();
         let todo = event.currentTarget.parentElement;
         deleteTodo(todo);
     });
@@ -26,8 +31,7 @@ function createTodo() {
 }
 
 function addTodo(todo) {
-    console.log(todo);
-    let newTodo = $(`<li data-id=${todo._id} class="task"> ${todo.task} <span>X</span> </li>`);
+    let newTodo = $(`<li data-id=${todo._id} data-completed=${todo.completed} class="task"> ${todo.task} <span>X</span> </li>`);
         if (todo.completed) {
             newTodo.addClass('done');
         }
@@ -48,5 +52,25 @@ function deleteTodo(todo) {
     .then((data) => {
         console.log(data);  
         $(todo).remove();
+    })
+}
+
+function updateTodo(todo) {
+    let todoID = todo.currentTarget.attributes[0].value;
+    let isCompleted = JSON.parse(todo.currentTarget.attributes[1].value);
+    let updateData = {completed: !isCompleted};
+    console.log(todo.currentTarget);
+    $.ajax({
+        method: 'PUT',
+        url: `/api/todos/${todoID}`,
+        data: updateData
+    })
+    .then((updatedTodo) => {
+        $(todo.currentTarget).toggleClass('done');
+        if (updateData.completed) {
+            $(todo.currentTarget).attr('data-completed', true)
+        } else {
+            $(todo.currentTarget).attr('data-completed', false)
+        }
     })
 }
