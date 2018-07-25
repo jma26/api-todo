@@ -6,8 +6,10 @@ const toDoRoutes = require('./routes/todos');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(__dirname + '/views'));
+app.use(express.static(__dirname + '/public'));
 
-app.get('/', (request, response) => response.send('Welcome to the Root route!'));
+app.get('/', (request, response) => response.sendFile('index.html'));
 
 app.use('/api/todos', toDoRoutes);
 
